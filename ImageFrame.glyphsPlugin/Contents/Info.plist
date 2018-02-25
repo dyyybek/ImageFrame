@@ -21,13 +21,13 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1</string>
 	<key>UpdateFeedURL</key>
-	<string>____OnlineUrlToThisPlist____</string>
+	<string>https://raw.githubusercontent.com/dyyybek/ImageFrame/master/ImageFrame.glyphsPlugin/Contents/Info.plist</string>
 	<key>productPageURL</key>
-	<string>____ProductPageURL____</string>
+	<string>https://github.com/dyyybek/ImageFrame</string>
 	<key>productReleaseNotes</key>
-	<string>Everyone was waiting for this plugin.</string>
+	<string>Introducing Image Frame Plug-In for GlyphsApp.</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright, dyb, 2018</string>
+	<string>Copyright, Marcin Dybaś, 2018</string>
 	<key>NSPrincipalClass</key>
 	<string>floatingImageFrame</string>
 	<key>PyMainFileNames</key>
