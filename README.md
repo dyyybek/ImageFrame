@@ -3,6 +3,8 @@
 Always wanted to look at a particular image while designing your hottest new font?
 This plugin allows you to keep your favourite images always on top for inspiration and relaxation.
 
+![alt text](https://github.com/dyyybek/ImageFrame/screenshot.png "Image Frame Plugin Screenshot")
+
 Just drag-and-drop any image file (tested with `.png`, `.jpg`, `.gif`) into the window.
 You can resize the window and drop another image to change the contents.
 
