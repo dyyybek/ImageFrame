@@ -1,4 +1,5 @@
 # encoding: utf-8
+from __future__ import division, print_function, unicode_literals
 
 ###########################################################################################################
 #
@@ -11,23 +12,36 @@
 #
 ###########################################################################################################
 
-
-from GlyphsApp.plugins import *
+import objc
 from vanilla import *
-from AppKit import NSColor, NSFocusRingTypeNone, NSBundle
+from AppKit import NSColor, NSFocusRingTypeNone, NSBundle, NSScreen
+from GlyphsApp import *
+from GlyphsApp.plugins import *
 
 class floatingImageFrame(GeneralPlugin):
-	def settings(self):
-		self.name = Glyphs.localize({'en': u'Image Frame'})
 	
+	@objc.python_method
+	def settings(self):
+		self.name = Glyphs.localize({
+			'en': 'Image Frame',
+			'de': 'Bilderrahmen',
+			'fr': 'Cadre photo',
+			'es': 'Marco de imagen',
+			'pt': 'Moldura',
+			'ja': '額縁',
+			'ko': '액자',
+			'zh': '画框',
+		})
+	
+	@objc.python_method
 	def start(self):
 		try: 
 			# new API in Glyphs 2.3.1-910
-			newMenuItem = NSMenuItem(self.name, self.showWindow)
+			newMenuItem = NSMenuItem(self.name, self.showWindow_)
 			Glyphs.menu[WINDOW_MENU].append(newMenuItem)
 		except:
 			mainMenu = Glyphs.mainMenu()
-			s = objc.selector(self.showWindow,signature='v@:@')
+			s = objc.selector(self.showWindow_,signature='v@:@')
 			newMenuItem = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_(self.name, s, "")
 			newMenuItem.setTarget_(self)
 			mainMenu.itemWithTag_(5).submenu().addItem_(newMenuItem)
@@ -38,13 +52,18 @@ class floatingImageFrame(GeneralPlugin):
 		except:
 			pass
 
-	def showWindow(self, sender):
-
+	def showWindow_(self, sender):
 		width, height = 400,300
 		minWidth, minHeight = 100,100
-		maxWidth, maxHeight = 1000,1000
+		maxWidth, maxHeight = 500,500
+		
+		# max size of window = size of largest screen:
+		for screen in NSScreen.screens():
+			screenSize = screen.visibleFrame().size
+			maxWidth = max(int(screenSize.width), maxWidth)
+			maxHeight = max(int(screenSize.height), maxHeight)
 
-		w = FloatingWindow((width, height),"Image Frame",minSize=(minWidth,minHeight),maxSize=(maxWidth,maxHeight))
+		w = FloatingWindow((width, height), self.name, minSize=(minWidth,minHeight), maxSize=(maxWidth,maxHeight))
 		w.center()
 
 		window = w.getNSWindow()
@@ -52,18 +71,19 @@ class floatingImageFrame(GeneralPlugin):
 		window.setStandardWindowTitleButtonsAlphaValue_(0.00001)
 		window.setBackgroundColor_(NSColor.whiteColor())
 		window.setAlphaValue_(0.9)
-		window.setMovableByWindowBackground_(True)
+		window.setMovableByWindowBackground_(1)
 
 		w.im = ImageView((10,10,-10,-10), horizontalAlignment='center', verticalAlignment='center', scale='proportional')
 		w.im.setImage(imagePath=self.iconPath)
 		imview = w.im.getNSImageView()
 		imview.setEditable_(True)
 		imview.setFocusRingType_(NSFocusRingTypeNone)
-
+		
 		w.open()
 		w.select()
 	
+	@objc.python_method
 	def __file__(self):
 		"""Please leave this method unchanged"""
 		return __file__
-	
+
