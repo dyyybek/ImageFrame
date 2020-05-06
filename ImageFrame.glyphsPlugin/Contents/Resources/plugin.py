@@ -14,9 +14,16 @@ from __future__ import division, print_function, unicode_literals
 
 import objc
 from vanilla import *
-from AppKit import NSColor, NSFocusRingTypeNone, NSBundle, NSScreen
+from AppKit import NSColor, NSFocusRingTypeNone, NSBundle, NSScreen, NSImageView
 from GlyphsApp import *
 from GlyphsApp.plugins import *
+
+class DYDraggingImageView(NSImageView):
+	def mouseDownCanMoveWindow(self):
+		return True
+class DYDraggingImageView(ImageView):
+	nsImageViewClass = DYDraggingImageView
+	pass
 
 class floatingImageFrame(GeneralPlugin):
 	
@@ -73,7 +80,7 @@ class floatingImageFrame(GeneralPlugin):
 		window.setAlphaValue_(0.9)
 		window.setMovableByWindowBackground_(1)
 
-		w.im = ImageView((10,10,-10,-10), horizontalAlignment='center', verticalAlignment='center', scale='proportional')
+		w.im = DYDraggingImageView((10,10,-10,-10), horizontalAlignment='center', verticalAlignment='center', scale='proportional')
 		w.im.setImage(imageObject=self.icon)
 		imview = w.im.getNSImageView()
 		imview.setEditable_(True)
