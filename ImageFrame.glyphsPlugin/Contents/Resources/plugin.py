@@ -14,9 +14,16 @@ from __future__ import division, print_function, unicode_literals
 
 import objc
 from vanilla import *
-from AppKit import NSColor, NSFocusRingTypeNone, NSBundle, NSScreen
+from AppKit import NSColor, NSFocusRingTypeNone, NSBundle, NSScreen, NSImageView
 from GlyphsApp import *
 from GlyphsApp.plugins import *
+
+class DYDraggingImageView(NSImageView):
+	def mouseDownCanMoveWindow(self):
+		return True
+class DYDraggingImageView(ImageView):
+	nsImageViewClass = DYDraggingImageView
+	pass
 
 class floatingImageFrame(GeneralPlugin):
 	
@@ -47,8 +54,8 @@ class floatingImageFrame(GeneralPlugin):
 			mainMenu.itemWithTag_(5).submenu().addItem_(newMenuItem)
 		try:
 			bundle = NSBundle.bundleWithIdentifier_("com.dyb.floatingImageFrame")
-			resourcesPath = bundle.resourcePath()
-			self.iconPath = resourcesPath + "/icon.png"
+			self.icon = bundle.imageForResource_("icon.png")
+			self.icon.setTemplate_(True)
 		except:
 			pass
 
@@ -69,12 +76,12 @@ class floatingImageFrame(GeneralPlugin):
 		window = w.getNSWindow()
 		window.setTitlebarAppearsTransparent_(1)
 		window.setStandardWindowTitleButtonsAlphaValue_(0.00001)
-		window.setBackgroundColor_(NSColor.whiteColor())
+		window.setBackgroundColor_(NSColor.textBackgroundColor())
 		window.setAlphaValue_(0.9)
 		window.setMovableByWindowBackground_(1)
 
-		w.im = ImageView((10,10,-10,-10), horizontalAlignment='center', verticalAlignment='center', scale='proportional')
-		w.im.setImage(imagePath=self.iconPath)
+		w.im = DYDraggingImageView((10,10,-10,-10), horizontalAlignment='center', verticalAlignment='center', scale='proportional')
+		w.im.setImage(imageObject=self.icon)
 		imview = w.im.getNSImageView()
 		imview.setEditable_(True)
 		imview.setFocusRingType_(NSFocusRingTypeNone)
