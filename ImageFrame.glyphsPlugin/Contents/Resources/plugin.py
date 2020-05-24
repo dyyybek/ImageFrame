@@ -13,17 +13,13 @@ from __future__ import division, print_function, unicode_literals
 ###########################################################################################################
 
 import objc
-from vanilla import *
-from AppKit import NSColor, NSFocusRingTypeNone, NSBundle, NSScreen, NSImageView
+from AppKit import NSColor, NSFocusRingTypeNone, NSBundle, NSScreen, NSImageView, NSPanel, NSViewWidthSizable, NSViewHeightSizable, NSFloatingWindowLevel, NSTitledWindowMask, NSUtilityWindowMask, NSResizableWindowMask, NSClosableWindowMask
 from GlyphsApp import *
 from GlyphsApp.plugins import *
 
 class DYDraggingImageView(NSImageView):
 	def mouseDownCanMoveWindow(self):
 		return True
-class DYDraggingImageView(ImageView):
-	nsImageViewClass = DYDraggingImageView
-	pass
 
 class floatingImageFrame(GeneralPlugin):
 	
@@ -61,25 +57,27 @@ class floatingImageFrame(GeneralPlugin):
 			screenSize = screen.visibleFrame().size
 			maxWidth = max(int(screenSize.width), maxWidth)
 			maxHeight = max(int(screenSize.height), maxHeight)
-
-		w = FloatingWindow((width, height), self.name, minSize=(minWidth,minHeight), maxSize=(maxWidth,maxHeight))
-		w.center()
-
-		window = w.getNSWindow()
+		
+		window = NSPanel.new()
+		window.setMinSize_(NSMakeSize(minWidth, minHeight))
+		window.setStyleMask_(NSTitledWindowMask | NSUtilityWindowMask | NSResizableWindowMask | NSClosableWindowMask)
 		window.setTitlebarAppearsTransparent_(1)
 		window.setStandardWindowTitleButtonsAlphaValue_(0.00001)
 		window.setBackgroundColor_(NSColor.textBackgroundColor())
 		window.setAlphaValue_(0.9)
 		window.setMovableByWindowBackground_(1)
 
-		w.im = DYDraggingImageView((10,10,-10,-10), horizontalAlignment='center', verticalAlignment='center', scale='proportional')
-		w.im.setImage(imageObject=self.icon)
-		imview = w.im.getNSImageView()
+		window.setFrame_display_(NSMakeRect(0, 0, width, height), True)
+		window.center()
+		window.setLevel_(NSFloatingWindowLevel)
+
+		imview = DYDraggingImageView.alloc().initWithFrame_(window.contentView().frame())
+		imview.setAutoresizingMask_(NSViewWidthSizable | NSViewHeightSizable)
 		imview.setEditable_(True)
 		imview.setFocusRingType_(NSFocusRingTypeNone)
-		
-		w.open()
-		w.select()
+		imview.setImage_(self.icon)
+		window.contentView().addSubview_(imview)
+		window.makeKeyAndOrderFront_(self)
 	
 	@objc.python_method
 	def __file__(self):
