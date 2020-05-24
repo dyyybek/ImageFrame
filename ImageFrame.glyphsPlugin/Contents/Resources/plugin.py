@@ -42,16 +42,8 @@ class floatingImageFrame(GeneralPlugin):
 	
 	@objc.python_method
 	def start(self):
-		try: 
-			# new API in Glyphs 2.3.1-910
-			newMenuItem = NSMenuItem(self.name, self.showWindow_)
-			Glyphs.menu[WINDOW_MENU].append(newMenuItem)
-		except:
-			mainMenu = Glyphs.mainMenu()
-			s = objc.selector(self.showWindow_,signature='v@:@')
-			newMenuItem = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_(self.name, s, "")
-			newMenuItem.setTarget_(self)
-			mainMenu.itemWithTag_(5).submenu().addItem_(newMenuItem)
+		newMenuItem = NSMenuItem(self.name, self.showWindow_)
+		Glyphs.menu[WINDOW_MENU].append(newMenuItem)
 		try:
 			bundle = NSBundle.bundleWithIdentifier_("com.dyb.floatingImageFrame")
 			self.icon = bundle.imageForResource_("icon.png")
