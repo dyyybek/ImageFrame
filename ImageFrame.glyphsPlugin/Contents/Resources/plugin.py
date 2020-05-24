@@ -67,7 +67,7 @@ class floatingImageFrame(GeneralPlugin):
 		window.setAlphaValue_(0.9)
 		window.setMovableByWindowBackground_(1)
 
-		if window.stringWithSavedFrame() is not None:
+		if Glyphs.defaults["NSWindow Frame com.dyb.floatingImageFrame"] is not None:
 			window.setFrameUsingName_("com.dyb.floatingImageFrame")
 		else:
 			window.setFrame_display_(NSMakeRect(0, 0, width, height), True)
