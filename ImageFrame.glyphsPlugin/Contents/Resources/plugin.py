@@ -67,8 +67,13 @@ class floatingImageFrame(GeneralPlugin):
 		window.setAlphaValue_(0.9)
 		window.setMovableByWindowBackground_(1)
 
-		window.setFrame_display_(NSMakeRect(0, 0, width, height), True)
-		window.center()
+		if window.stringWithSavedFrame() is not None:
+			window.setFrameUsingName_("com.dyb.floatingImageFrame")
+		else:
+			window.setFrame_display_(NSMakeRect(0, 0, width, height), True)
+			window.center()
+
+		window.setFrameAutosaveName_("com.dyb.floatingImageFrame")
 		window.setLevel_(NSFloatingWindowLevel)
 
 		imview = DYDraggingImageView.alloc().initWithFrame_(window.contentView().frame())
