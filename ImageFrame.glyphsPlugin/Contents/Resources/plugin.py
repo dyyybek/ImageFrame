@@ -13,16 +13,18 @@ from __future__ import division, print_function, unicode_literals
 ###########################################################################################################
 
 import objc
-from AppKit import NSColor, NSFocusRingTypeNone, NSBundle, NSScreen, NSImageView, NSPanel, NSViewWidthSizable, NSViewHeightSizable, NSFloatingWindowLevel, NSTitledWindowMask, NSUtilityWindowMask, NSResizableWindowMask, NSClosableWindowMask
-from GlyphsApp import *
-from GlyphsApp.plugins import *
+from AppKit import NSColor, NSFocusRingTypeNone, NSBundle, NSScreen, NSImageView, NSPanel, NSMenuItem, NSViewWidthSizable, NSViewHeightSizable, NSFloatingWindowLevel, NSTitledWindowMask, NSUtilityWindowMask, NSResizableWindowMask, NSClosableWindowMask, NSMakeSize, NSMakeRect
+from GlyphsApp import Glyphs, WINDOW_MENU
+from GlyphsApp.plugins import GeneralPlugin
+
 
 class DYDraggingImageView(NSImageView):
 	def mouseDownCanMoveWindow(self):
 		return True
 
+
 class floatingImageFrame(GeneralPlugin):
-	
+
 	@objc.python_method
 	def settings(self):
 		self.name = Glyphs.localize({
@@ -35,7 +37,7 @@ class floatingImageFrame(GeneralPlugin):
 			'ko': '액자',
 			'zh': '画框',
 		})
-	
+
 	@objc.python_method
 	def start(self):
 		newMenuItem = NSMenuItem(self.name, self.showWindow_)
@@ -48,16 +50,16 @@ class floatingImageFrame(GeneralPlugin):
 			pass
 
 	def showWindow_(self, sender):
-		width, height = 400,300
-		minWidth, minHeight = 100,100
-		maxWidth, maxHeight = 500,500
-		
+		width, height = 400, 300
+		minWidth, minHeight = 100, 100
+		maxWidth, maxHeight = 500, 500
+
 		# max size of window = size of largest screen:
 		for screen in NSScreen.screens():
 			screenSize = screen.visibleFrame().size
 			maxWidth = max(int(screenSize.width), maxWidth)
 			maxHeight = max(int(screenSize.height), maxHeight)
-		
+
 		window = NSPanel.new()
 		window.setMinSize_(NSMakeSize(minWidth, minHeight))
 		window.setStyleMask_(NSTitledWindowMask | NSUtilityWindowMask | NSResizableWindowMask | NSClosableWindowMask)
@@ -83,9 +85,8 @@ class floatingImageFrame(GeneralPlugin):
 		imview.setImage_(self.icon)
 		window.contentView().addSubview_(imview)
 		window.makeKeyAndOrderFront_(self)
-	
+
 	@objc.python_method
 	def __file__(self):
 		"""Please leave this method unchanged"""
 		return __file__
-
